@@ -1,6 +1,7 @@
 import 'package:f24_notes_sphere/services/note_services.dart';
 import 'package:f24_notes_sphere/utils/router.dart';
 import 'package:f24_notes_sphere/utils/text_styles.dart';
+import 'package:f24_notes_sphere/widgets/notes_card.dart';
 import 'package:flutter/material.dart';
 
 import '../models/note_model.dart';
@@ -101,7 +102,8 @@ class _NotesPageState extends State<NotesPage> {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.5,
       child: const Center(
-        child: Text("No notes are available, please click the + button to add a new note"),
+        child: Text(
+            "No notes are available, please click the + button to add a new note"),
       ),
     );
   }
@@ -119,7 +121,19 @@ class _NotesPageState extends State<NotesPage> {
         childAspectRatio: 6 / 4,
       ),
       itemBuilder: (context, index) {
-        return Text("data");
+        return InkWell(
+          onTap: () {
+            // go to the notes by category page
+            AppRouter.router.push(
+              "/category",
+              extra: notesWithCategory.keys.elementAt(index),
+            );
+          },
+          child: NotesCard(
+            noteCategory: notesWithCategory.keys.elementAt(index),
+            noOfNotes: notesWithCategory.values.elementAt(index).length,
+          ),
+        );
       },
     );
   }
