@@ -9,7 +9,7 @@ import 'package:hive_flutter/adapters.dart';
 
 void main() async {
   // Initialize the Hive package
-  await Hive.initFlutter();
+  await Hive.initFlutter(); // import 'package:hive_flutter/adapters.dart';
 
   // Register the adapters
   Hive.registerAdapter(NoteModelAdapter());
