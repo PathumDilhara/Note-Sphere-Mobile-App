@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
     // Sub title Style
     static TextStyle appSubTitleStyle = const TextStyle(
       fontSize: 24,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.bold,
       color: AppColors.kWhiteColor,
     );
 

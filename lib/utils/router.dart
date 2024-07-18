@@ -1,5 +1,5 @@
 import 'package:f24_notes_sphere/pages/home_page.dart';
-import 'package:f24_notes_sphere/pages/note_by_category.dart';
+import 'package:f24_notes_sphere/pages/note_by_category_page.dart';
 import 'package:f24_notes_sphere/pages/notes_page.dart';
 import 'package:f24_notes_sphere/pages/todo_page.dart';
 import 'package:flutter/material.dart';
