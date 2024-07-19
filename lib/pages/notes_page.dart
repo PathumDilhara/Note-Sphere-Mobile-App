@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../models/note_model.dart';
 import '../utils/colors.dart';
+import '../widgets/bottom_sheet.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -49,6 +50,25 @@ class _NotesPageState extends State<NotesPage> {
     });
   }
 
+  // Open bottom sheet
+  void openBottomSheet() {
+    showModalBottomSheet(
+      barrierColor: Colors.black.withOpacity(0.7),
+      context: context,
+      builder: (context) {
+        return CategoryInputBottomSheet(
+          onNewNote: () {
+            Navigator.pop(context); // Close the bottom sheet
+            AppRouter.router.push("/create_new_note", extra: false);
+          },
+        onNewCategory: (){
+          Navigator.pop(context); // Close the bottom sheet
+          AppRouter.router.push("/create_new_note", extra: true);
+        },);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +98,7 @@ class _NotesPageState extends State<NotesPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: openBottomSheet,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(100),

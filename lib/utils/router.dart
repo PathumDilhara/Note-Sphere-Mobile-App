@@ -5,6 +5,8 @@ import 'package:f24_notes_sphere/pages/todo_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../pages/create_new_note_page.dart';
+
 class AppRouter {
   static final router = GoRouter(
     navigatorKey: GlobalKey<NavigatorState>(),
@@ -39,6 +41,18 @@ class AppRouter {
           return NoteByCategory(category: category);
         },
       ),
+
+      // Create new note page
+      GoRoute(
+        name: "create_new_note",
+        path: "/create_new_note",
+        builder: (context, state) {
+          final isNewCategory = state.extra as bool;
+          return CreateNewNotePage(
+            isNewCategory: isNewCategory,
+          );
+        },
+      )
     ],
   );
 }
