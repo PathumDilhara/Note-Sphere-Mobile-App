@@ -1,3 +1,4 @@
+import 'package:f24_notes_sphere/helpers/snackbar.dart';
 import 'package:f24_notes_sphere/services/note_services.dart';
 import 'package:f24_notes_sphere/utils/colors.dart';
 import 'package:f24_notes_sphere/utils/router.dart';
@@ -32,8 +33,28 @@ class _NoteByCategoryState extends State<NoteByCategory> {
   Future<void> _loadNotesByCategory() async {
     noteList = await noteServices.getNotesByCategoryName(widget.category);
     setState(() {
-      print(noteList.length);
+      //print(noteList.length);
     });
+  }
+
+  // Edit note
+  void _editNote(NoteModel noteModel){
+    // Navigator to the edit note page
+    AppRouter.router.push("/edit_note", extra: noteModel);
+  }
+
+  // remove notes
+  Future<void> _removeNote(String id) async {
+    try{
+      await noteServices.deleteNote(id);
+      if(context.mounted){
+        AppHelpers.showSnackBar(context, "Note deleted successfully");
+      }
+
+    } catch(error){
+      AppHelpers.showSnackBar(context, "Failed to delete Note");
+      print(error.toString());
+    }
   }
 
   @override
@@ -82,10 +103,18 @@ class _NoteByCategoryState extends State<NoteByCategory> {
                 ),
                 itemBuilder: (context, index) {
                   return NoteCategoryCard(
-                      noteTitle: noteList[index].title,
-                      noteContent: noteList[index].content,
-                      removeNote: ()async {},
-                      editNote: ()async{});
+                    noteTitle: noteList[index].title,
+                    noteContent: noteList[index].content,
+                    removeNote: () async {
+                      await _removeNote(noteList[index].id);
+                      setState(() {
+                        noteList.removeAt(index);
+                      });
+                    },
+                    editNote: () async {
+                      _editNote(noteList[index]);
+                    },
+                  );
                 },
               )
             ],

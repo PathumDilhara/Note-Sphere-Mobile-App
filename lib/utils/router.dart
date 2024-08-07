@@ -1,7 +1,9 @@
+import 'package:f24_notes_sphere/models/note_model.dart';
 import 'package:f24_notes_sphere/pages/home_page.dart';
 import 'package:f24_notes_sphere/pages/note_by_category_page.dart';
 import 'package:f24_notes_sphere/pages/notes_page.dart';
 import 'package:f24_notes_sphere/pages/todo_page.dart';
+import 'package:f24_notes_sphere/pages/update_note_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -52,7 +54,17 @@ class AppRouter {
             isNewCategory: isNewCategory,
           );
         },
-      )
+      ),
+
+      // Edit note page
+      GoRoute(
+        name: "edit note",
+        path: "/edit_note",
+        builder: (context, state) {
+          final NoteModel note = state.extra as NoteModel;
+          return UpdateNotePage(noteModel: note);
+        },
+      ),
     ],
   );
 }
