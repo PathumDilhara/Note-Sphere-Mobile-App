@@ -38,22 +38,21 @@ class _NoteByCategoryState extends State<NoteByCategory> {
   }
 
   // Edit note
-  void _editNote(NoteModel noteModel){
+  void _editNote(NoteModel noteModel) {
     // Navigator to the edit note page
     AppRouter.router.push("/edit_note", extra: noteModel);
   }
 
   // remove notes
   Future<void> _removeNote(String id) async {
-    try{
+    try {
       await noteServices.deleteNote(id);
-      if(context.mounted){
+      if (context.mounted) {
         AppHelpers.showSnackBar(context, "Note deleted successfully");
       }
-
-    } catch(error){
+    } catch (error) {
       AppHelpers.showSnackBar(context, "Failed to delete Note");
-      print(error.toString());
+      //print(error.toString());
     }
   }
 
@@ -103,6 +102,7 @@ class _NoteByCategoryState extends State<NoteByCategory> {
                 ),
                 itemBuilder: (context, index) {
                   return NoteCategoryCard(
+                    // Don't wrap entire widget bcs then we cant touch edit delete buttons
                     noteTitle: noteList[index].title,
                     noteContent: noteList[index].content,
                     removeNote: () async {
@@ -113,6 +113,12 @@ class _NoteByCategoryState extends State<NoteByCategory> {
                     },
                     editNote: () async {
                       _editNote(noteList[index]);
+                    },
+                    viewSingleNote: () {
+                      AppRouter.router.push(
+                        "/single_note_display",
+                        extra: noteList[index],
+                      );
                     },
                   );
                 },

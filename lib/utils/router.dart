@@ -2,6 +2,7 @@ import 'package:f24_notes_sphere/models/note_model.dart';
 import 'package:f24_notes_sphere/pages/home_page.dart';
 import 'package:f24_notes_sphere/pages/note_by_category_page.dart';
 import 'package:f24_notes_sphere/pages/notes_page.dart';
+import 'package:f24_notes_sphere/pages/single_note_display_page.dart';
 import 'package:f24_notes_sphere/pages/todo_page.dart';
 import 'package:f24_notes_sphere/pages/update_note_page.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,16 @@ class AppRouter {
           return UpdateNotePage(noteModel: note);
         },
       ),
+
+      // Single note display page
+      GoRoute(
+        name: "single note display",
+        path: "/single_note_display",
+        builder: (context, state) {
+          final NoteModel noteModel = state.extra as NoteModel;
+          return SingleNoteDisplayPage(noteModel: noteModel);
+        },
+      )
     ],
   );
 }
