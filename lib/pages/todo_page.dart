@@ -1,3 +1,5 @@
+import 'package:f24_notes_sphere/models/todo_model.dart';
+import 'package:f24_notes_sphere/services/todo_services.dart';
 import 'package:f24_notes_sphere/utils/colors.dart';
 import 'package:f24_notes_sphere/widgets/completed_tab.dart';
 import 'package:f24_notes_sphere/widgets/todo_tab.dart';
@@ -18,11 +20,47 @@ class _TodoPageState extends State<TodoPage>
   // tab bar controller for store the which tab i in (knowledge)
   late TabController _tabController;
 
+  // variables/states for store todos lists
+  late List<TodoModel> allTodos = [];
+  late List<TodoModel> incompletedTodos = [];
+  late List<TodoModel> completedTodos = [];
+
+  //o Obj for user services class
+  TodoServices todoServices = TodoServices();
+
   @override
   void initState() {
     super.initState();
     _tabController =
         TabController(length: 2, vsync: this); // length = no of tabs
+    _checkIfUserIsNew();
+  }
+
+  // Check is user new or not
+  void _checkIfUserIsNew() async {
+    final bool isNewUser =
+        await todoServices.isNewUser(); // Check in user services
+    // print(isNewUser);
+
+    if (isNewUser) {
+      await todoServices.createInitialTodos();
+    }
+    await _loadTodos();
+  }
+
+  // Load the todos
+  Future<void> _loadTodos() async {
+    final List<TodoModel> loadedTodos = await todoServices.loadTodos();
+    setState(() {
+      allTodos = loadedTodos;
+      // incompleted todos
+      incompletedTodos = allTodos
+          .where((todo) => !todo.isDone)
+          .toList(); // work as a loop 'todo' is a variable like 'i, j'
+
+      // Completed todos
+      completedTodos = allTodos.where((todo) => todo.isDone).toList();
+    });
   }
 
   @override
@@ -65,10 +103,14 @@ class _TodoPageState extends State<TodoPage>
       ),
       body: TabBarView(
         controller: _tabController, // For identifying tab switching
-        children: const [
+        children: [
           // show in order
-          TodoTab(),
-          CompletedTab()
+          TodoTab(
+            inCompletedTodos: incompletedTodos,
+          ),
+          CompletedTab(
+            completedTodos: completedTodos,
+          )
         ],
       ),
     );
