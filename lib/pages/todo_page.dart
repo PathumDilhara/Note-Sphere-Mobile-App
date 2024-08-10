@@ -1,3 +1,4 @@
+import 'package:f24_notes_sphere/helpers/snackbar.dart';
 import 'package:f24_notes_sphere/models/todo_model.dart';
 import 'package:f24_notes_sphere/services/todo_services.dart';
 import 'package:f24_notes_sphere/utils/colors.dart';
@@ -27,6 +28,16 @@ class _TodoPageState extends State<TodoPage>
 
   //o Obj for user services class
   TodoServices todoServices = TodoServices();
+
+  // Controller for message model Text field
+  final TextEditingController _taskController = TextEditingController();
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    _taskController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -63,6 +74,112 @@ class _TodoPageState extends State<TodoPage>
     });
   }
 
+  // Open message model
+  void openMessageModel(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.kCardColor,
+          contentPadding: EdgeInsets.zero,
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                child: Text(
+                  "Add task",
+                  style: AppTextStyles.appDescriptionLargeStyle
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          content: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+            child: TextField(
+              controller: _taskController,
+              style: const TextStyle(
+                color: AppColors.kWhiteColor,
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                hintText: "Enter your task",
+                hintStyle: AppTextStyles.appDescriptionSmallStyle.copyWith(
+                  color: AppColors.kWhiteColor.withOpacity(0.5),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                _addTask();
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                    const WidgetStatePropertyAll(AppColors.kFlaButColor),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                ),
+              ),
+              child: Text(
+                "Add task",
+                style: AppTextStyles.appButton,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: const ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  AppColors.kCardColor,
+                ),
+              ),
+              child: Text(
+                "Cancel",
+                style: AppTextStyles.appButton,
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to add task
+  void _addTask() async {
+    try {
+      if (_taskController.text.isNotEmpty) {
+        // we dont need pass an id bcs by Uuid automatically add an id
+        final TodoModel newTodo = TodoModel(
+          title: _taskController.text,
+          date: DateTime.now(),
+          time: DateTime.now(),
+          isDone: false,
+        );
+
+        await todoServices.addTodo(newTodo);
+        setState(() {
+          allTodos.add(newTodo);
+          incompletedTodos.add(newTodo);
+        });
+        
+        AppHelpers.showSnackBar(context, "Task added !");
+        Navigator.pop(context); // close the popup window
+      }
+    } catch(err){
+      AppHelpers.showSnackBar(context, "Failed to add task");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +205,9 @@ class _TodoPageState extends State<TodoPage>
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          openMessageModel(context);
+        },
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(100),
@@ -106,10 +225,12 @@ class _TodoPageState extends State<TodoPage>
         children: [
           // show in order
           TodoTab(
-            inCompletedTodos: incompletedTodos, completedTodos: completedTodos,
+            inCompletedTodos: incompletedTodos,
+            completedTodos: completedTodos,
           ),
           CompletedTab(
-            completedTodos: completedTodos, inCompletedTodos: incompletedTodos,
+            completedTodos: completedTodos,
+            inCompletedTodos: incompletedTodos,
           )
         ],
       ),

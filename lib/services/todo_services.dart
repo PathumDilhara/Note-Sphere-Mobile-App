@@ -53,9 +53,24 @@ class TodoServices {
   Future<void> markAsDone(TodoModel todoModel) async {
     try {
       final dynamic allTodos = await _myTodoBox.get("todos");
-      final int index = allTodos.indexWhere((element) => element.id == todoModel.id);
+      final int index =
+          allTodos.indexWhere((element) => element.id == todoModel.id);
       allTodos[index] = todoModel;
 
+      await _myTodoBox.put("todos", allTodos);
+    } catch (err) {
+      print(err.toString());
+    }
+  }
+
+  // Add a new todo
+  Future<void> addTodo(TodoModel todoModel) async {
+    try {
+      // get allTodos set from stored todo box
+      final dynamic allTodos = await _myTodoBox.get("todos");
+      // update the got allTodos set
+      allTodos.add(todoModel);
+      // Store again allTodos set in todo box using same name(key)
       await _myTodoBox.put("todos", allTodos);
     } catch (err) {
       print(err.toString());
