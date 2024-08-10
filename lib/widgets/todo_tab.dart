@@ -27,6 +27,7 @@ class _TodoTabState extends State<TodoTab> {
         date: todoModel.date,
         time: todoModel.time,
         isDone: true,
+        id: todoModel.id, // need to pass id o/w will create new one
       );
 
       await TodoServices().markAsDone(updatedTodo);
@@ -38,7 +39,6 @@ class _TodoTabState extends State<TodoTab> {
         widget.inCompletedTodos.remove(todoModel);
         widget.completedTodos.add(updatedTodo);
       });
-
     } catch (err) {
       print(err.toString());
       AppHelpers.showSnackBar(context, "Failed to Mark as Done");
