@@ -28,6 +28,7 @@ class _CompletedTabState extends State<CompletedTab> {
         date: todoModel.date,
         time: todoModel.time,
         isDone: false,
+        id: todoModel.id,
       );
 
       await TodoServices().markAsDone(updatedTodo);
