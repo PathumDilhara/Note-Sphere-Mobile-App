@@ -5,7 +5,8 @@ import 'package:f24_notes_sphere/utils/theme_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'inherited_widgets/todo_inherited_widget.dart';
 
 void main() async {
   // Initialize the Hive package
@@ -18,7 +19,7 @@ void main() async {
   // Open Hive boxes
   await Hive.openBox("notes");
   await Hive.openBox("todos");
-  
+
   runApp(const MyApp());
 }
 
@@ -27,14 +28,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: AppRouter.router,
-      debugShowCheckedModeBanner: false,
-      theme: ThemeClass.darkTheme.copyWith(
-        // Adding google fonts
-       textTheme: GoogleFonts.dmSansTextTheme(Theme.of(context).textTheme),
+    return TodoInheritedWidget(
+      todoModel: [],
+      updateTodos: (p0) {},
+      child: MaterialApp.router(
+        routerConfig: AppRouter.router,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeClass.darkTheme.copyWith(
+          // Adding google fonts
+          textTheme: GoogleFonts.dmSansTextTheme(Theme.of(context).textTheme),
+        ),
+        title: "Note Sphere",
       ),
-      title: "Note Sphere",
     );
   }
 }

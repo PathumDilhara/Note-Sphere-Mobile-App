@@ -3,6 +3,7 @@ import 'package:f24_notes_sphere/services/todo_services.dart';
 import 'package:f24_notes_sphere/widgets/todo_card.dart';
 import 'package:flutter/material.dart';
 
+import '../inherited_widgets/todo_inherited_widget.dart';
 import '../models/todo_model.dart';
 
 class TodoTab extends StatefulWidget {

@@ -70,7 +70,7 @@ class _ProgressCardState extends State<ProgressCard> {
               Positioned.fill(
                   child: Center(
                 child: Text(
-                  "$completionPercentage%",
+                  "${completionPercentage.toStringAsFixed(2)}%",
                   style: AppTextStyles.appSubTitleStyle.copyWith(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

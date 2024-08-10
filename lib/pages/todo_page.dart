@@ -6,6 +6,7 @@ import 'package:f24_notes_sphere/widgets/completed_tab.dart';
 import 'package:f24_notes_sphere/widgets/todo_tab.dart';
 import 'package:flutter/material.dart';
 
+import '../inherited_widgets/todo_inherited_widget.dart';
 import '../utils/text_styles.dart';
 
 class TodoPage extends StatefulWidget {
@@ -158,83 +159,92 @@ class _TodoPageState extends State<TodoPage>
 
   // Method to add task
   void _addTask() async {
-    try {
-      if (_taskController.text.isNotEmpty) {
-        // we dont need pass an id bcs by Uuid automatically add an id
-        final TodoModel newTodo = TodoModel(
-          title: _taskController.text,
-          date: DateTime.now(),
-          time: DateTime.now(),
-          isDone: false,
-        );
+    if (_taskController.text.isNotEmpty) {
+      // we don't need pass an id bcs by Uuid automatically add an id
+      final TodoModel newTodo = TodoModel(
+        title: _taskController.text,
+        date: DateTime.now(),
+        time: DateTime.now(),
+        isDone: false,
+      );
 
+      try {
         await todoServices.addTodo(newTodo);
-        setState(() {
-          allTodos.add(newTodo);
-          incompletedTodos.add(newTodo);
-        });
-        
+        _loadTodos();
+        if(TodoInheritedWidget != null){
+          TodoInheritedWidget.of(context)!.updateTodos(allTodos);
+        }
+        // setState(() {
+        //   allTodos.add(newTodo);
+        //   incompletedTodos.add(newTodo);
+        // });
+
         AppHelpers.showSnackBar(context, "Task added !");
         Navigator.pop(context); // close the popup window
+
+      } catch (err) {
+        AppHelpers.showSnackBar(context, "Failed to add task");
       }
-    } catch(err){
-      AppHelpers.showSnackBar(context, "Failed to add task");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: [
-            Tab(
-              child: Text(
-                "ToDo",
-                style: AppTextStyles.appDescriptionLargeStyle
-                    .copyWith(fontWeight: FontWeight.bold),
+    return TodoInheritedWidget(
+      todoModel: allTodos,
+      updateTodos: (p0) {},
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(
+                child: Text(
+                  "ToDo",
+                  style: AppTextStyles.appDescriptionLargeStyle
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
-            ),
-            Tab(
-              child: Text(
-                "Completed",
-                style: AppTextStyles.appDescriptionLargeStyle
-                    .copyWith(fontWeight: FontWeight.bold),
+              Tab(
+                child: Text(
+                  "Completed",
+                  style: AppTextStyles.appDescriptionLargeStyle
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
               ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            openMessageModel(context);
+          },
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(100),
             ),
+            side: BorderSide(color: AppColors.kWhiteColor, width: 2),
+          ),
+          child: const Icon(
+            Icons.add,
+            size: 30,
+            color: AppColors.kWhiteColor,
+          ),
+        ),
+        body: TabBarView(
+          controller: _tabController, // For identifying tab switching
+          children: [
+            // show in order
+            TodoTab(
+              inCompletedTodos: incompletedTodos,
+              completedTodos: completedTodos,
+            ),
+            CompletedTab(
+              completedTodos: completedTodos,
+              inCompletedTodos: incompletedTodos,
+            )
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          openMessageModel(context);
-        },
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(100),
-          ),
-          side: BorderSide(color: AppColors.kWhiteColor, width: 2),
-        ),
-        child: const Icon(
-          Icons.add,
-          size: 30,
-          color: AppColors.kWhiteColor,
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController, // For identifying tab switching
-        children: [
-          // show in order
-          TodoTab(
-            inCompletedTodos: incompletedTodos,
-            completedTodos: completedTodos,
-          ),
-          CompletedTab(
-            completedTodos: completedTodos,
-            inCompletedTodos: incompletedTodos,
-          )
-        ],
       ),
     );
   }
