@@ -1,7 +1,5 @@
 import 'package:f24_notes_sphere/helpers/snackbar.dart';
 import 'package:f24_notes_sphere/services/todo_services.dart';
-import 'package:f24_notes_sphere/utils/router.dart';
-import 'package:f24_notes_sphere/utils/text_styles.dart';
 import 'package:f24_notes_sphere/widgets/todo_card.dart';
 import 'package:flutter/material.dart';
 
@@ -67,10 +65,21 @@ class _TodoTabState extends State<TodoTab> {
             itemCount: widget.inCompletedTodos.length,
             itemBuilder: (context, index) {
               final TodoModel todoModel = widget.inCompletedTodos[index];
-              return TodoCard(
-                todoModel: todoModel,
-                isCompleted: false,
-                onCheckBoxChanged: () => _markTodoAsDone(todoModel),
+              return Dismissible(
+                key: Key(todoModel.id.toString()),
+                onDismissed: (direction) {
+                  setState(() {
+                    widget.inCompletedTodos.removeAt(index);
+                    TodoServices().deleteTodo(todoModel);
+                  });
+
+                  AppHelpers.showSnackBar(context, "Deleted");
+                },
+                child: TodoCard(
+                  todoModel: todoModel,
+                  isCompleted: false,
+                  onCheckBoxChanged: () => _markTodoAsDone(todoModel),
+                ),
               );
             },
           ))

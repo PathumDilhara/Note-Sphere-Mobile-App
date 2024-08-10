@@ -39,7 +39,6 @@ class _CompletedTabState extends State<CompletedTab> {
         widget.completedTodos.remove(todoModel);
         widget.inCompletedTodos.add(updatedTodo);
       });
-
     } catch (err) {
       print(err.toString());
       AppHelpers.showSnackBar(context, "Failed to Mark as Undone");
@@ -62,17 +61,28 @@ class _CompletedTabState extends State<CompletedTab> {
             height: 10,
           ),
           Expanded(
-              child: ListView.builder(
-            itemCount: widget.completedTodos.length,
-            itemBuilder: (context, index) {
-              final TodoModel todoModel = widget.completedTodos[index];
-              return TodoCard(
-                todoModel: todoModel,
-                isCompleted: true,
-                onCheckBoxChanged: () => _markTodoAsUnDone(todoModel),
-              );
-            },
-          ))
+            child: ListView.builder(
+              itemCount: widget.completedTodos.length,
+              itemBuilder: (context, index) {
+                final TodoModel todoModel = widget.completedTodos[index];
+                return Dismissible(
+                  key: Key(todoModel.id.toString()),
+                  onDismissed: (direction) {
+                    setState(() {
+                      widget.completedTodos.removeAt(index);
+                      TodoServices().deleteTodo(todoModel);
+                    });
+                    AppHelpers.showSnackBar(context, "Deleted");
+                  },
+                  child: TodoCard(
+                    todoModel: todoModel,
+                    isCompleted: true,
+                    onCheckBoxChanged: () => _markTodoAsUnDone(todoModel),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );

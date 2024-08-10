@@ -76,4 +76,15 @@ class TodoServices {
       print(err.toString());
     }
   }
+
+  // delete a todo by sliding
+  Future<void> deleteTodo(TodoModel todoModel) async{
+    try{
+      final dynamic allTodos = await _myTodoBox.get("todos");
+      allTodos.remove(todoModel);
+      await _myTodoBox.put("todos", allTodos);
+    } catch(err){
+      print(err.toString());
+    }
+  }
 }

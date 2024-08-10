@@ -119,6 +119,7 @@ class _TodoPageState extends State<TodoPage>
             ElevatedButton(
               onPressed: () {
                 _addTask();
+                _taskController.clear();
               },
               style: ButtonStyle(
                 backgroundColor:
@@ -137,6 +138,7 @@ class _TodoPageState extends State<TodoPage>
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                _taskController.clear();
               },
               style: const ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(
