@@ -9,7 +9,7 @@ class AppHelpers {
         backgroundColor: AppColors.kFlaButColor,
         content: Text(
           message,
-          style: AppTextStyles.appButton,
+          style: AppTextStyles.appDescriptionLargeStyle.copyWith(fontSize: 18, fontWeight: FontWeight.w500),
         ),
         duration: const Duration(seconds: 1),
       ),

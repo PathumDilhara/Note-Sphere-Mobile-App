@@ -46,7 +46,19 @@ class TodoServices {
     if (todos != null && todos is List<dynamic>) {
       return todos.cast<TodoModel>().toList();
     }
-
     return [];
+  }
+
+  // Mark the todo as done
+  Future<void> markAsDone(TodoModel todoModel) async {
+    try {
+      final dynamic allTodos = await _myTodoBox.get("todos");
+      final int index = allTodos.indexWhere((element) => element.id == todoModel.id);
+      allTodos[index] = todoModel;
+
+      await _myTodoBox.put("todos", allTodos);
+    } catch (err) {
+      print(err.toString());
+    }
   }
 }

@@ -7,10 +7,11 @@ import '../models/todo_model.dart';
 class TodoCard extends StatefulWidget {
   final TodoModel todoModel;
   final bool isCompleted;
+  final Function() onCheckBoxChanged;
   const TodoCard({
     super.key,
     required this.todoModel,
-    required this.isCompleted,
+    required this.isCompleted, required this.onCheckBoxChanged,
   });
 
   @override
@@ -52,7 +53,7 @@ class _TodoCardState extends State<TodoCard> {
         ),
         trailing: Checkbox(
           value: widget.isCompleted,
-          onChanged: (value) {},
+          onChanged: (value) => widget.onCheckBoxChanged(),
         ),
       ),
     );

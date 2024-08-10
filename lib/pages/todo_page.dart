@@ -106,10 +106,10 @@ class _TodoPageState extends State<TodoPage>
         children: [
           // show in order
           TodoTab(
-            inCompletedTodos: incompletedTodos,
+            inCompletedTodos: incompletedTodos, completedTodos: completedTodos,
           ),
           CompletedTab(
-            completedTodos: completedTodos,
+            completedTodos: completedTodos, inCompletedTodos: incompletedTodos,
           )
         ],
       ),
